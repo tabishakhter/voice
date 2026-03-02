@@ -66,7 +66,7 @@ class TaskVoiceAPITester:
             "password": password,
             "name": name
         }
-        success, data, details = self.make_request('POST', 'auth/signup', signup_data, 201, auth_required=False)
+        success, data, details = self.make_request('POST', 'auth/signup', signup_data, 200, auth_required=False)
         
         if success and data.get('access_token'):
             self.token = data['access_token']
