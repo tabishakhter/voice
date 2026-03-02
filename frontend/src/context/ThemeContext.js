@@ -12,9 +12,11 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'dark';
     const stored = localStorage.getItem('taskvoice_theme');
     if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Default to dark mode as per design guidelines
+    return 'dark';
   });
 
   useEffect(() => {
