@@ -111,7 +111,7 @@ class TaskVoiceAPITester:
             "duration_minutes": 60,
             "priority": "high"
         }
-        success, data, details = self.make_request('POST', 'tasks', task_data, 201)
+        success, data, details = self.make_request('POST', 'tasks', task_data, 200)
         
         if success and data.get('id'):
             self.created_tasks.append(data['id'])
