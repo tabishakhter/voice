@@ -1,0 +1,157 @@
+{
+  "identity": {
+    "name": "TaskVoice AI",
+    "description": "A minimal, voice-first task manager for productivity enthusiasts.",
+    "tone": "Efficient, Modern, Tactile, Focused",
+    "target_audience": "Productivity-focused individuals on mobile",
+    "platform": "Mobile Web App (PWA style)"
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Manrope, sans-serif",
+      "body": "Inter, sans-serif"
+    },
+    "scale": {
+      "h1": "text-4xl font-bold tracking-tight",
+      "h2": "text-2xl font-semibold tracking-tight",
+      "h3": "text-xl font-medium",
+      "body": "text-base font-normal leading-relaxed",
+      "small": "text-sm font-medium text-muted-foreground"
+    },
+    "imports": [
+      "@fontsource/manrope",
+      "@fontsource/inter"
+    ]
+  },
+  "colors": {
+    "theme": "dark_preferred",
+    "palette": {
+      "primary": {
+        "DEFAULT": "#f97316",
+        "foreground": "#ffffff",
+        "hover": "#ea580c",
+        "soft": "rgba(249, 115, 22, 0.1)"
+      },
+      "background": {
+        "dark": "#09090b",
+        "light": "#ffffff",
+        "glass": "rgba(9, 9, 11, 0.8)"
+      },
+      "surface": {
+        "dark": "#18181b",
+        "light": "#f4f4f5",
+        "border": "#27272a"
+      },
+      "text": {
+        "primary": "#fafafa",
+        "secondary": "#a1a1aa",
+        "inverse": "#09090b"
+      },
+      "status": {
+        "success": "#22c55e",
+        "warning": "#eab308",
+        "error": "#ef4444"
+      }
+    },
+    "gradients": {
+      "mic_glow": "radial-gradient(circle, rgba(249,115,22,0.4) 0%, rgba(249,115,22,0) 70%)",
+      "auth_overlay": "linear-gradient(to top, #09090b 0%, rgba(9,9,11,0.4) 100%)"
+    }
+  },
+  "layout_strategy": {
+    "container": "max-w-md mx-auto min-h-screen bg-background relative overflow-hidden shadow-2xl",
+    "spacing": {
+      "page_padding": "px-6 py-8",
+      "section_gap": "gap-8",
+      "card_padding": "p-5"
+    },
+    "structure": {
+      "mobile_first": true,
+      "navigation": "Bottom floating bar or top minimal header",
+      "timeline": "Vertical line with attached cards"
+    }
+  },
+  "components": {
+    "voice_button": {
+      "style": "fixed bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-[0_0_30px_rgba(249,115,22,0.4)] z-50 transition-transform active:scale-95",
+      "icon_size": "w-8 h-8 text-white"
+    },
+    "task_card": {
+      "base": "group relative bg-surface-dark/50 backdrop-blur-sm border border-white/5 rounded-xl p-4 transition-all hover:bg-surface-dark hover:border-white/10",
+      "priority_indicator": {
+        "high": "w-1.5 h-full absolute left-0 top-0 bottom-0 bg-red-500 rounded-l-xl",
+        "medium": "w-1.5 h-full absolute left-0 top-0 bottom-0 bg-yellow-500 rounded-l-xl",
+        "low": "w-1.5 h-full absolute left-0 top-0 bottom-0 bg-blue-500 rounded-l-xl"
+      }
+    },
+    "timeline": {
+      "line": "absolute left-6 top-0 bottom-0 w-0.5 bg-border z-0",
+      "dot": "absolute left-[21px] w-3 h-3 rounded-full bg-background border-2 border-primary z-10"
+    },
+    "inputs": {
+      "style": "bg-surface-dark border-border focus:ring-primary focus:border-primary rounded-lg h-12 px-4"
+    }
+  },
+  "assets": {
+    "images": {
+      "auth_background": {
+        "url": "https://images.unsplash.com/photo-1760717135429-519418a7e6da?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwzfHwzZCUyMGFic3RyYWN0JTIwc2hhcGUlMjBvcmFuZ2UlMjBkYXJrJTIwYmFja2dyb3VuZCUyMG1pbmltYWxpc3R8ZW58MHx8fHwxNzcyNDIyODM2fDA&ixlib=rb-4.1.0&q=85",
+        "alt": "Abstract orange flowing shapes"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "mapping": {
+        "mic": "Mic",
+        "calendar": "Calendar",
+        "check": "CheckCircle2",
+        "settings": "Settings",
+        "play": "Play",
+        "pause": "Pause",
+        "delete": "Trash2",
+        "edit": "Edit3"
+      }
+    }
+  },
+  "motion": {
+    "transitions": "transition-all duration-300 ease-out",
+    "animations": {
+      "pulse": "animate-pulse",
+      "slide_up": "animate-in slide-in-from-bottom duration-500 fade-in",
+      "scale_in": "animate-in zoom-in duration-300 fade-in"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install 'lucide-react' for icons.",
+    "Use 'date-fns' for date formatting in the timeline.",
+    "Implement the 'Voice Input' as a full-screen overlay or bottom sheet with a waveform visualization when active.",
+    "Use LocalStorage for 'dark_mode' preference, defaulting to system preference.",
+    "Ensure touch targets are at least 44x44px for mobile accessibility.",
+    "For the Timeline: Use a vertical flex layout. The 'line' should connect tasks. Group tasks by time slots (Morning, Afternoon, Evening) if possible.",
+    "Use the Auth Background image for the Login/Signup page with a heavy blur and overlay.",
+    "The 'Big Mic Button' is the heart of the app. Make it float above everything on the Dashboard.",
+    "Use Shadcn UI components for complex interactions (Dialog, Drawer, Form) but style them with the provided colors.",
+    "Add 'data-testid' to all interactive elements."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use 'sonner' for toasts. Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
