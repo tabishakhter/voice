@@ -104,6 +104,11 @@ h1, h2, h3, h4, h5, h6 {
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
+/* Fix Emergent badge z-index */
+[data-emergent-badge] {
+  z-index: 10 !important;
+}
+
 /* Mic button glow animation */
 @keyframes mic-glow {
   0%, 100% {
