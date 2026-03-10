@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, [fetchUser]);
 
   const fetchUser = async () => {
     try {
