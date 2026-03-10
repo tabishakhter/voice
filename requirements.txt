@@ -5,5 +5,4 @@ python-dotenv
 pydantic[email]
 bcrypt
 pyjwt
-emergentintegrations
-asyncio
+openai
