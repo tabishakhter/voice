@@ -12,7 +12,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from openai import AsyncOpenAI
 import asyncio
 import json
 
@@ -30,7 +30,7 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 # LLM Key
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
 # Create the main app
 app = FastAPI(title="TaskVoice AI API")
@@ -174,51 +174,23 @@ async def increment_ai_usage(user_id: str):
     )
 
 async def parse_task_with_ai(text: str) -> dict:
-    """Use GPT-4o-mini to parse task from natural language"""
-    chat = LlmChat(
-        api_key=EMERGENT_LLM_KEY,
-        session_id=str(uuid.uuid4()),
-        system_message="""You are a task parser. Extract task information from natural language input.
-Return a JSON object with these fields:
-- name: string (the task name/description)
-- scheduled_time: string (ISO 8601 format datetime, use today's date if not specified)
-- duration_minutes: number or null (duration in minutes if mentioned)
-- priority: string ("high", "medium", or "low" - default to "medium" if not specified)
-
-Examples:
-"Gym at 9 pm" -> {"name": "Gym", "scheduled_time": "2025-01-31T21:00:00", "duration_minutes": null, "priority": "medium"}
-"Study 2 hours at 6 am high priority" -> {"name": "Study", "scheduled_time": "2025-01-31T06:00:00", "duration_minutes": 120, "priority": "high"}
-"Meeting tomorrow at 3pm" -> {"name": "Meeting", "scheduled_time": "2025-02-01T15:00:00", "duration_minutes": null, "priority": "medium"}
-
-Today's date is: """ + datetime.now(timezone.utc).strftime("%Y-%m-%d") + """
-Return ONLY valid JSON, no other text."""
-    ).with_model("openai", "gpt-4o-mini")
-    
-    user_message = UserMessage(text=text)
-    response = await chat.send_message(user_message)
-    
-    # Parse the JSON response
+    client_ai = AsyncOpenAI(api_key=OPENAI_API_KEY)
+    response = await client_ai.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a task parser. Return ONLY valid JSON with fields: name, scheduled_time (ISO 8601), duration_minutes (or null), priority (high/medium/low). Today is: " + datetime.now(timezone.utc).strftime("%Y-%m-%d")},
+            {"role": "user", "content": text}
+        ]
+    )
     try:
-        # Clean up response in case of markdown code blocks
-        cleaned = response.strip()
+        cleaned = response.choices[0].message.content.strip()
         if cleaned.startswith("```"):
             cleaned = cleaned.split("\n", 1)[1]
         if cleaned.endswith("```"):
             cleaned = cleaned.rsplit("```", 1)[0]
-        cleaned = cleaned.strip()
-        if cleaned.startswith("json"):
-            cleaned = cleaned[4:].strip()
-        
-        return json.loads(cleaned)
+        return json.loads(cleaned.strip())
     except json.JSONDecodeError:
-        logger.error(f"Failed to parse AI response: {response}")
-        # Return a basic parsed version
-        return {
-            "name": text,
-            "scheduled_time": None,
-            "duration_minutes": None,
-            "priority": "medium"
-        }
+        return {"name": text, "scheduled_time": None, "duration_minutes": None, "priority": "medium"}
 
 # ==================== Auth Routes ====================
 
