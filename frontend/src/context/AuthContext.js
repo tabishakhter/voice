@@ -1,11 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-
 const AuthContext = createContext(null);
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -13,22 +10,17 @@ export const useAuth = () => {
   }
   return context;
 };
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('taskvoice_token'));
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchUser();
-    } else {
-      setLoading(false);
-    }
-  }, [fetchUser]);
-
-  const fetchUser = async () => {
+  const logout = useCallback(() => {
+    localStorage.removeItem('taskvoice_token');
+    delete axios.defaults.headers.common['Authorization'];
+    setToken(null);
+    setUser(null);
+  }, []);
+  const fetchUser = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/auth/me`);
       setUser(response.data);
@@ -38,8 +30,15 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [logout]);
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [fetchUser, token]);
   const login = async (email, password) => {
     const response = await axios.post(`${API}/auth/login`, { email, password });
     const { access_token, user: userData } = response.data;
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     return userData;
   };
-
   const signup = async (email, password, name) => {
     const response = await axios.post(`${API}/auth/signup`, { email, password, name });
     const { access_token, user: userData } = response.data;
@@ -59,20 +57,11 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     return userData;
   };
-
-  const logout = () => {
-    localStorage.removeItem('taskvoice_token');
-    delete axios.defaults.headers.common['Authorization'];
-    setToken(null);
-    setUser(null);
-  };
-
   const refreshUser = async () => {
     if (token) {
       await fetchUser();
     }
   };
-
   return (
     <AuthContext.Provider value={{ user, token, loading, login, signup, logout, refreshUser }}>
       {children}
