@@ -422,16 +422,15 @@ async def root():
     return {"message": "TaskVoice AI API", "version": "1.0.0"}
 
 # Include the router in the main app
-app.include_router(api_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+app.include_router(api_router)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
